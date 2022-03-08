@@ -8,6 +8,7 @@ import (
 func main() {
 	var num int = 100
 	reflectTest(num)
+	TypeJudge(num)
 }
 
 func reflectTest(b interface{}) {
@@ -29,5 +30,25 @@ func reflectTest(b interface{}) {
 	originalNum := reflectValue.Interface().(int)
 	fmt.Println("originalNum =", originalNum)
 	fmt.Printf("originalNumType = %T\n", originalNum)
+
+}
+
+func TypeJudge(items ...interface{}) {
+	for i, x := range items {
+		switch x.(type) {
+		case bool:
+			fmt.Printf("param #%d is a bool 值是%v\n", i, x)
+		case float64:
+			fmt.Printf("param #%d is a float64 值是%v\n", i, x)
+		case int, int64:
+			fmt.Printf("param #%d is a int 值是%v\n", i, x)
+		case string:
+			fmt.Printf("param #%s is a string 值是%v\n", i, x)
+		case nil:
+			fmt.Printf("param #%d is a nil 值是%v\n", i, x)
+		default:
+			fmt.Printf("param #%d is a unkunow 值是%v\n", i, x)
+		}
+	}
 
 }
