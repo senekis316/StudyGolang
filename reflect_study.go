@@ -5,10 +5,59 @@ import (
 	"reflect"
 )
 
+type Monster2 struct {
+	Name string  `json:"monsterName"`
+	Age  int     `json:"monsterAge"`
+	Sal  float64 `json:"monsterSal"`
+	Sex  string  `json:"monsterSex"`
+}
+
 func main() {
 	var num int = 100
 	reflectTest(num)
 	TypeJudge(num)
+
+	ptrReflectTest(num)
+	ptrReflectTest(&num)
+
+	var monster Monster2 = Monster2{
+		Name: "abc",
+		Age:  16,
+		Sal:  1000,
+		Sex:  "male",
+	}
+	reflectGetFields(monster)
+
+}
+
+func reflectGetFields(b interface{}) {
+	reflectValue := reflect.ValueOf(b)
+	if reflectValue.Kind() != reflect.Struct {
+		fmt.Println("data must be struct type")
+	} else {
+		fmt.Printf("struct has %d field\n", reflectValue.NumField())
+		for i := 0; i < reflectValue.NumField(); i++ {
+			tagVal := reflect.TypeOf(b).Field(i).Tag.Get("json")
+			fieldVal := reflectValue.Field(i)
+			fmt.Printf("tagVal = %v, FieldValue = %v\n", tagVal, fieldVal)
+		}
+	}
+}
+
+func ptrReflectTest(b interface{}) {
+	reflectKind := reflect.ValueOf(b).Kind()
+	fmt.Println("reflectKind =", reflectKind)
+	fmt.Println("reflectKind =", reflectKind.String())
+	fmt.Printf("reflectKind String() %T\n", reflectKind.String())
+
+	if reflectKind.String() == "int" {
+		fmt.Println("reflectValue =", reflect.ValueOf(b).Int())
+	}
+	if reflectKind.String() == "ptr" {
+		reflect.ValueOf(b).Elem().SetInt(30)
+		fmt.Println("reflectValue =", reflect.ValueOf(b).Elem().Int())
+	}
+
 }
 
 func reflectTest(b interface{}) {
